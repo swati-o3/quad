@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dear Mama - Maternal Care App</title>
+    <link rel="icon" href="https://firebasestorage.googleapis.com/v0/b/widecanvas-d0dd4.appspot.com/o/logos%2FAPP%20LOGO.jpg?alt=media&token=a6992304-a425-4e16-8f3c-cae25d0f15c3" type="image/x-icon">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Body and other default styling */
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Light and Dark Modes */
+        body.light-mode {
+            background-color: #fff;
+            color:bg-red-600;
+        }
+
+        body.dark-mode {
+            background-color: #121212;
+            color: bg-red-600;
+        }
+
+        /* Prevent page scroll during transitions */
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            height: 100%;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        .container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        /* Button Styles */
+        .button {
+            display: inline-block;
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .button-signin {
+            background-color: #ffb8f9;
+            color: #fff;
+        }
+
+        .button-signin:hover {
+            background-color: #ff9de2;
+            transform: scale(1.05);
+        }
+
+        .button-signup {
+            background-color: transparent;
+            border: 2px solid #ffb8f9;
+            color: #ffb8f9;
+        }
+
+        .button-signup:hover {
+            background-color: #ffb8f9;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .button-gradient {
+            background: linear-gradient(45deg, #ffb8f9, #ff9de2);
+            color: #fff;
+        }
+
+        .button-gradient:hover {
+            background: linear-gradient(45deg, #ff9de2, #ffb8f9);
+        }
+
+        /* Toggle Button */
+        .toggle-btn {
+            padding: 10px 15px;
+            background-color: #ffb8f9;
+            color: #fff;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            background-color: #ff9de2;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <!-- Dark Mode/Light Mode Toggle -->
+    <div class="flex justify-end p-4">
+        <button id="mode-toggle" class="toggle-btn">
+            <i class="bi bi-moon"></i> Toggle Dark Mode
+        </button>
+    </div>
+
+    <!-- Sign In/Sign Up Page -->
+    <div id="auth-page" class="page active">
+        <div class="container">
+            <div class="content p-4 flex justify-center items-center">
+                <div class="w-full max-w-md p-6 bg-white rounded-2xl shadow-lg">
+                    <div class="flex justify-center mb-6">
+                        <img src="https://firebasestorage.googleapis.com/v0/b/widecanvas-d0dd4.appspot.com/o/logos%2FAPP%20LOGO.jpg?alt=media&token=a6992304-a425-4e16-8f3c-cae25d0f15c3" 
+                            alt="Dear Mama Logo" class="w-32 h-32 rounded-full">
+                    </div>
+                    <h1 class="text-3xl font-bold text-center mb-6 text-[#ffb8f9]">Dear Mama</h1>
+                    <div class="space-y-4">
+                        <input type="email" id="email" placeholder="Email" class="w-full p-3 border rounded-lg">
+                        <input type="password" id="password" placeholder="Password" class="w-full p-3 border rounded-lg">
+                        <button onclick="authenticate('signin')" class="button button-signin">Sign In</button>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mother's Information Page -->
+    <div id="mother-info-page" class="page">
+        <div class="container">
+            <div class="content p-4 flex justify-center items-center">
+                <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-6 text-[#ffb8f9]">Mother's Information</h2>
+                    <div class="space-y-4">
+                        <input type="text" id="mother-name" placeholder="Full Name" class="w-full p-3 border rounded-lg">
+                        <input type="number" id="mother-age" placeholder="Age" class="w-full p-3 border rounded-lg">
+                        <select id="blood-group" class="w-full p-3 border rounded-lg">
+                            <option value="">Select Blood Group</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                        </select>
+                        <button onclick="saveMotherInfo()" class="button button-gradient">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOS Information Page -->
+    <div id="sos-info-page" class="page">
+        <div class="container">
+            <div class="content p-4 flex justify-center items-center">
+                <div class="max-w-md mx-auto bg-white p-6 rounded-2xl shadow-lg">
+                    <h2 class="text-2xl font-bold mb-6 text-[#ffb8f9]">Emergency Contacts</h2>
+                    <div class="space-y-4">
+                        <div class="contact-input">
+                            <input type="text" placeholder="Contact Name" class="w-full p-3 border rounded-lg mb-2">
+                            <input type="tel" placeholder="Contact Number" class="w-full p-3 border rounded-lg">
+                        </div>
+                        <button onclick="addContact()" class="button button-signup">+ Add Another Contact</button>
+                        <button onclick="saveSosInfo()" class="button button-gradient">Continue</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Dashboard Page -->
+    <div id="dashboard-page" class="page">
+        <div class="container">
+            <div class="content p-4">
+                <div class="max-w-4xl mx-auto space-y-4">
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <div class="flex justify-between items-center mb-6">
+                            <h1 class="text-2xl font-bold text-[#ffb8f9]">Welcome, <span id="mother-name-display">Mama</span></h1>
+                            <button onclick="triggerSOS()" class="px-6 py-2 bg-red-500 text-white rounded-full hover:bg-red-600">
+                                <i class="bi bi-exclamation-triangle-fill"></i> SOS
+                            </button>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- Health Metrics -->
+                            <div class="p-4 border rounded-lg">
+                                <h3 class="font-semibold mb-4">Today's Health</h3>
+                                <div class="space-y-3">
+                                    <input type="number" placeholder="Blood Pressure (systolic)" class="w-full p-2 border rounded">
+                                    <input type="number" placeholder="Blood Pressure (diastolic)" class="w-full p-2 border rounded">
+                                    <input type="number" placeholder="Fetal Movement Count" class="w-full p-2 border rounded">
+                                </div>
+                            </div>
+
+                            <!-- Sleep Cycle -->
+                            <div class="p-4 border rounded-lg">
+                                <h3 class="font-semibold mb-4">Sleep Cycle</h3>
+                                <input type="number" placeholder="Hours of Sleep" class="w-full p-2 border rounded mb-2">
+                                <select class="w-full p-2 border rounded">
+                                    <option value="">Sleep Quality</option>
+                                    <option value="good">Good</option>
+                                    <option value="fair">Fair</option>
+                                    <option value="poor">Poor</option>
+                                </select>
+                            </div>
+
+                            <!-- Hydration -->
+                            <div class="p-4 border rounded-lg">
+                                <h3 class="font-semibold mb-4">Hydration</h3>
+                                <input type="number" placeholder="Water Glasses (250ml)" class="w-full p-2 border rounded">
+                            </div>
+
+                            <!-- Mood Tracker -->
+                            <div class="p-4 border rounded-lg">
+                                <h3 class="font-semibold mb-4">Mood</h3>
+                                <select class="w-full p-2 border rounded">
+                                    <option value="">How are you feeling?</option>
+                                    <option value="happy">Happy 😊</option>
+                                    <option value="neutral">Neutral 😐</option>
+                                    <option value="tired">Tired 😫</option>
+                                    <option value="anxious">Anxious 😰</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button onclick="saveDaily()" class="button button-gradient mt-4 w-full">
+                            Save Today's Update
+                        </button>
+                    </div>
+
+                    <!-- Community Section -->
+                    <div class="bg-white p-6 rounded-2xl shadow-lg">
+                        <h3 class="font-semibold mb-4">Local Moms Community</h3>
+                        <div class="space-y-2" id="community-posts">
+                            <!-- Community posts will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dark Mode / Light Mode Toggle Functionality
+        const toggleButton = document.getElementById('mode-toggle');
+        toggleButton.addEventListener('click', () => {
+            const body = document.body;
+            body.classList.toggle('light-mode');
+            body.classList.toggle('dark-mode');
+            
+            if (body.classList.contains('dark-mode')) {
+                toggleButton.innerHTML = '<i class="bi bi-sun"></i> Toggle Light Mode';
+            } else {
+                toggleButton.innerHTML = '<i class="bi bi-moon"></i> Toggle Dark Mode';
+            }
+        });
+
+        // Authentication and Navigation Functions (as before)
+        function authenticate(type) {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            showPage('mother-info-page');
+        }
+
+        function showPage(pageId) {
+            const currentPage = document.querySelector('.page.active');
+            const nextPage = document.getElementById(pageId);
+
+            currentPage.classList.remove('active');
+            nextPage.classList.add('active');
+        }
+
+        // Mother's Information
+        function saveMotherInfo() {
+            const name = document.getElementById('mother-name').value;
+            const age = document.getElementById('mother-age').value;
+            const bloodGroup = document.getElementById('blood-group').value;
+
+            if (!name || !age || !bloodGroup) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            document.getElementById('mother-name-display').textContent = name;
+            showPage('sos-info-page');
+        }
+
+        // SOS Information
+        function addContact() {
+            const contactInput = document.querySelector('.contact-input');
+            const newContact = contactInput.cloneNode(true);
+            document.querySelector('.contact-input').parentNode.insertBefore(newContact, document.querySelector('.contact-input').nextSibling);
+        }
+
+        function saveSosInfo() {
+            showPage('dashboard-page');
+        }
+
+        // Save Daily Information
+        function saveDaily() {
+            alert('Daily information saved successfully!');
+        }
+
+        // Trigger SOS
+        function triggerSOS() {
+            alert('SOS triggered! Sending emergency alerts.');
+        }
+    </script>
+</body>
+</html>
